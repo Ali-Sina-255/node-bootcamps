@@ -7,74 +7,8 @@ const asyncHandler = require("../middleware/async");
 // @route GET /api/v1/bootcamps
 // @access Private
 const getBootcamps = asyncHandler(async (req, res, next) => {
-  // Copy query object
-  const reqQuery = { ...req.query };
-
-  // Fields to exclude
-  const removeFields = ["page", "limit", "sort", "select"];
-
-  removeFields.forEach((param) => delete reqQuery[param]);
-
-  // Advanced filtering
-  let queryStr = JSON.stringify(reqQuery);
-
-  queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in)\b/g,
-    (match) => `$${match}`,
-  );
-
-  // Build query
-  let query = Bootcamp.find(JSON.parse(queryStr));
-
-  // 🔥 SELECT FIELDS
-  if (req.query.select) {
-    const fields = req.query.select.split(",").join(" ");
-    query = query.select(fields);
-  }
-
-  // 🔥 SORT
-  if (req.query.sort) {
-    const sortBy = req.query.sort.split(",").join(" ");
-    query = query.sort(sortBy);
-  } else {
-    query = query.sort("-createdAt");
-  }
-
-  // 🔥 PAGINATION
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 5; // smaller default for testing
-  const skip = (page - 1) * limit;
-
-  const total = await Bootcamp.countDocuments(JSON.parse(queryStr));
-
-  query = query.skip(skip).limit(limit);
-
-  const bootcamps = await query;
-
-  // Pagination result
-  const pagination = {};
-
-  if (skip + bootcamps.length < total) {
-    pagination.next = {
-      page: page + 1,
-      limit,
-    };
-  }
-
-  if (skip > 0) {
-    pagination.prev = {
-      page: page - 1,
-      limit,
-    };
-  }
-
-  res.status(200).json({
-    success: true,
-    total,
-    count: bootcamps.length,
-    pagination,
-    data: bootcamps,
-  });
+  res.status(200).json(res.advancedResults);
+  
 });
 
 // @desc  GET single bootcamp
@@ -135,10 +69,35 @@ const deleteBootcamps = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc  POST Upload Photo
+// @route PUT /api/v1/bootcamps/:id/photo
+// @access Private
+const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamp.findById(req.params.id);
+
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        400,
+      ),
+    );
+  }
+
+  if (!req.files) {
+    return next(new ErrorResponse(`Please upload file`, 400));
+  }
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 module.exports = {
   getBootcamps,
   getBootcamp,
   createBootcamps,
   updateBootcamps,
   deleteBootcamps,
+  bootcampPhotoUpload,
 };
