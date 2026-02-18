@@ -2,6 +2,9 @@ const ErrorResponse = require("../utils/errorResponse");
 
 const { Bootcamp } = require("../models");
 const asyncHandler = require("../middleware/async");
+const path = require("path");
+const fs = require("fs");
+
 
 // @desc  GET all bootcamps
 // @route GET /api/v1/bootcamps
@@ -88,9 +91,48 @@ const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Please upload file`, 400));
   }
 
-  res.status(200).json({
-    success: true,
-  });
+  const file = req.files.file;
+
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Please upload an image file`, 400));
+  }
+
+  const maxFileUpload =
+    Number.parseInt(process.env.MAX_FILE_UPLOAD, 10) || 1000000;
+  if (file.size > maxFileUpload) {
+    const maxMb = Math.max(1, Math.round(maxFileUpload / (1024 * 1024)));
+    return next(
+      new ErrorResponse(`Please upload an image file less than ${maxMb}MB`, 400),
+    );
+  }
+
+  file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+
+  const uploadDir = (() => {
+    const configured = process.env.FILE_UPLOAD_PATH;
+    if (!configured) return path.join(process.cwd(), "public", "uploads");
+    return path.isAbsolute(configured)
+      ? configured
+      : path.join(process.cwd(), configured);
+  })();
+
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  const uploadPath = path.join(uploadDir, file.name);
+
+  file.mv(uploadPath, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(new ErrorResponse(`Problem with file upload`, 500));
+    }
+    await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  }); 
 });
 
 module.exports = {

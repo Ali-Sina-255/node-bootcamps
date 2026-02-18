@@ -19,7 +19,6 @@ router.use("/:bootcampId/courses", courseRouter);
 
 router.route("/").get(advancedResults(Bootcamp, "courses"), getBootcamps).post(createBootcamps);
 router.route("/:id/photo").put(bootcampPhotoUpload);
-router.route();
 router
   .route("/:id")
   .get(getBootcamp)

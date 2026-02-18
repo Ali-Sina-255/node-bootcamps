@@ -32,8 +32,15 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // upload file method
-app.use(fileupload());
+app.use(
+  fileupload({
+    createParentPath: true,
+  }),
+);
 
+
+// set static folder
+app.use(express.static(path.join(__dirname, "public")));
 // Mount routes
 app.use("/api/v1/bootcamps", bootcampsRoutes);
 app.use("/api/v1/courses", courseRoutes);
