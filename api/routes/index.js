@@ -1,4 +1,7 @@
-// Aggregate all route files
+const bootcampRoutes = require("./bootcamps.routes");
+const courseRoutes = require("./course.routes");
+
 module.exports = {
-  bootcampsRoutes: require("./bootcamps.routes"),
+  bootcampRoutes,
+  courseRoutes,
 };
