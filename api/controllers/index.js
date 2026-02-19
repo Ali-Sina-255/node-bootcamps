@@ -10,6 +10,8 @@ const bootcampPhotoUpload =
 const registerUser = require("./authController").registerUser;
 const loginUser = require("./authController").loginUser;
 const getMe = require("./authController").getMe;
+const forgotPassword = require("./authController").forgotPassword;
+const resetPassword = require("./authController").resetPassword;
 module.exports = {
   getBootcamps,
   getBootcamp,
@@ -20,4 +22,6 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  forgotPassword,
+  resetPassword,
 };

@@ -5,13 +5,11 @@ const asyncHandler = require("../middleware/async");
 const path = require("path");
 const fs = require("fs");
 
-
 // @desc  GET all bootcamps
 // @route GET /api/v1/bootcamps
 // @access Private
 const getBootcamps = asyncHandler(async (req, res, next) => {
   res.status(200).json(res.advancedResults);
-  
 });
 
 // @desc  GET single bootcamp
@@ -35,6 +33,20 @@ const getBootcamp = asyncHandler(async (req, res, next) => {
 // @route POST /api/v1/bootcamps
 // @access Private
 const createBootcamps = asyncHandler(async (req, res, next) => {
+  // add user to the req,body
+  req.body.user = req.user.id;
+  // check for the published bootcamp
+
+  const publishedBootcamp = await Bootcamp.findOne({ user: req.user.id });
+  if (publishedBootcamp && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `The user with ID  ${req.user.id} has already published`,
+        400,
+      ),
+    );
+  }
+
   const bootcamp = await Bootcamp.create(req.body);
   res.status(201).json({ success: true, data: bootcamp });
 });
@@ -102,7 +114,10 @@ const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   if (file.size > maxFileUpload) {
     const maxMb = Math.max(1, Math.round(maxFileUpload / (1024 * 1024)));
     return next(
-      new ErrorResponse(`Please upload an image file less than ${maxMb}MB`, 400),
+      new ErrorResponse(
+        `Please upload an image file less than ${maxMb}MB`,
+        400,
+      ),
     );
   }
 
@@ -132,7 +147,7 @@ const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
       success: true,
       data: file.name,
     });
-  }); 
+  });
 });
 
 module.exports = {
