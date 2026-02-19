@@ -7,6 +7,9 @@ const deleteBootcamps = require("./bootcampsController").deleteBootcamps;
 const bootcampPhotoUpload =
   require("./bootcampsController").bootcampPhotoUpload;
 
+const registerUser = require("./authController").registerUser;
+const loginUser = require("./authController").loginUser;
+const getMe = require("./authController").getMe;
 module.exports = {
   getBootcamps,
   getBootcamp,
@@ -14,4 +17,7 @@ module.exports = {
   updateBootcamps,
   deleteBootcamps,
   bootcampPhotoUpload,
+  registerUser,
+  loginUser,
+  getMe,
 };

@@ -3,7 +3,7 @@ const colors = require("colors");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const path = require("path");
-
+const cookieParser = require("cookie-parser");
 const fileupload = require("express-fileupload");
 
 const connectDB = require("./config/db");
@@ -12,7 +12,7 @@ const errorHandler = require("./middleware/error");
 // Routes
 const bootcampsRoutes = require("./routes/bootcamps.routes");
 const courseRoutes = require("./routes/course.routes");
-
+const authRoues = require("./routes/auth.routes");
 // Load environment variables
 dotenv.config({
   path: path.join(__dirname, "config", "config.env"),
@@ -26,6 +26,8 @@ const app = express();
 // Body parser
 app.use(express.json());
 
+app.use(cookieParser());
+
 // Logging middleware (development only)
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -38,12 +40,12 @@ app.use(
   }),
 );
 
-
 // set static folder
 app.use(express.static(path.join(__dirname, "public")));
 // Mount routes
 app.use("/api/v1/bootcamps", bootcampsRoutes);
 app.use("/api/v1/courses", courseRoutes);
+app.use("/api/v1/auth", authRoues);
 
 // Error handler (MUST be last middleware)
 app.use(errorHandler);

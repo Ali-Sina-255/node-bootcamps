@@ -5,7 +5,6 @@ const { Bootcamp, Course } = require("../models");
 // @route GET /api/v1/course
 // @access public
 const getCourses = asyncHandler(async (req, res, next) => {
-  
   if (req.params.bootcampId) {
     const courses = await Course.find({ bootcamp: req.params.bootcampid });
     return res.status(200).json({
@@ -13,13 +12,9 @@ const getCourses = asyncHandler(async (req, res, next) => {
       count: courses.length,
       data: courses,
     });
-
   } else {
     res.status(200).json(res.advancedResults);
-
   }
-
-
 });
 
 // @desc  GET bootcamp
@@ -65,6 +60,9 @@ const createCourse = asyncHandler(async (req, res, next) => {
     data: course,
   });
 });
+
+
+
 
 // @desc  PUT Update
 // @route PUT /api/v1/bootcamp/:bootcampid/course
