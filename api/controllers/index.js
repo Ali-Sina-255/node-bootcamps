@@ -12,6 +12,8 @@ const loginUser = require("./authController").loginUser;
 const getMe = require("./authController").getMe;
 const forgotPassword = require("./authController").forgotPassword;
 const resetPassword = require("./authController").resetPassword;
+const updateUserDetails = require("./authController").updateUserDetails;
+const updatePassword = require("./authController").updatePassword
 module.exports = {
   getBootcamps,
   getBootcamp,
@@ -24,4 +26,6 @@ module.exports = {
   getMe,
   forgotPassword,
   resetPassword,
+  updateUserDetails,
+  updatePassword
 };

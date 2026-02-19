@@ -121,7 +121,6 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Invalid reset token", 400));
   }
   
-
   user.password = req.body.password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
@@ -129,6 +128,57 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
   sendTokenResponse(user, 200, res);
 })
+
+// @desc  update User Details
+// @route PUT /api/v1/auth/updatedetails
+// @access private
+
+const updateUserDetails = asyncHandler(async (req, res, next) => {
+
+ const fieldsToUpdate = {
+  name: req.body.name,
+  email: req.body.email,
+ }
+
+ 
+
+ if (req.body.name) {
+  fieldsToUpdate.name = req.body.name;
+ }
+ if (req.body.email) {
+  fieldsToUpdate.email = req.body.email;
+ }
+ const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+  new: true,
+  runValidators: true,
+ })
+ if (!user) {
+  return next(new ErrorResponse("User not found", 404));
+ }
+ res.status(200).json({
+  success: true,
+  data: user,
+ });
+})
+
+
+// @desc  update User Password
+// @route PUT /api/v1/auth/updatepassword
+// @access private
+
+const updatePassword = asyncHandler(async(req,res,next) =>{
+  const user = await User.findById(req.user.id).select("+password")
+  // check the current password is ture
+  if(!(await user.isMatchPassword(req.body.crrentPassword))){
+    return next(new ErrorResponse("Password is incorrect!"))
+  } 
+
+  user.password = req.body.newPassword
+  await user.save()
+  
+  sendTokenResponse(user, 200,res)
+})
+
 
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignJwtToken();
@@ -149,4 +199,4 @@ const sendTokenResponse = (user, statusCode, res) => {
   });
 };
 
-module.exports = { registerUser, loginUser, getMe, forgotPassword, resetPassword };
+module.exports = { registerUser, loginUser, getMe, forgotPassword, resetPassword, updateUserDetails, updatePassword };
