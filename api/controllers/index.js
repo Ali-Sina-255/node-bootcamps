@@ -6,14 +6,20 @@ const deleteBootcamps = require("./bootcampsController").deleteBootcamps;
 
 const bootcampPhotoUpload =
   require("./bootcampsController").bootcampPhotoUpload;
-
+// auth
 const registerUser = require("./authController").registerUser;
 const loginUser = require("./authController").loginUser;
 const getMe = require("./authController").getMe;
 const forgotPassword = require("./authController").forgotPassword;
 const resetPassword = require("./authController").resetPassword;
 const updateUserDetails = require("./authController").updateUserDetails;
-const updatePassword = require("./authController").updatePassword
+const updatePassword = require("./authController").updatePassword;
+// Users
+const createUser = require("./userController").createUser;
+const getUsers = require("./userController").getUsers;
+const getUser = require("./userController").getUser;
+const updateUser = require("./userController").updateUser;
+const deleteUser = require("./userController").deleteUser;
 module.exports = {
   getBootcamps,
   getBootcamp,
@@ -27,5 +33,11 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updateUserDetails,
-  updatePassword
+  updatePassword,
+  // user
+  createUser,
+  deleteUser,
+  updateUser,
+  getUsers,
+  getUser,
 };

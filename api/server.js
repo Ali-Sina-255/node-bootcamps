@@ -12,7 +12,8 @@ const errorHandler = require("./middleware/error");
 // Routes
 const bootcampsRoutes = require("./routes/bootcamps.routes");
 const courseRoutes = require("./routes/course.routes");
-const authRoues = require("./routes/auth.routes");
+const authRoutes = require("./routes/auth.routes");
+const userRoutes = require("./routes/user.routes");
 // Load environment variables
 dotenv.config({
   path: path.join(__dirname, "config", "config.env"),
@@ -45,7 +46,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Mount routes
 app.use("/api/v1/bootcamps", bootcampsRoutes);
 app.use("/api/v1/courses", courseRoutes);
-app.use("/api/v1/auth", authRoues);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // Error handler (MUST be last middleware)
 app.use(errorHandler);
