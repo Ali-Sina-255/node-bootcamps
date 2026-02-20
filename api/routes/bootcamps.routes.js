@@ -13,9 +13,11 @@ const {
 } = require("../controllers");
 
 const courseRouter = require("./course.routes");
+const reviewRouter = require("./review.routes");
 
 // Re-route into other resource routers
 router.use("/:bootcampId/courses", courseRouter);
+router.use("/:bootcampId/review", reviewRouter);
 
 router
   .route("/")

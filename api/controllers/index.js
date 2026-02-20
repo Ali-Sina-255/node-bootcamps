@@ -20,6 +20,14 @@ const getUsers = require("./userController").getUsers;
 const getUser = require("./userController").getUser;
 const updateUser = require("./userController").updateUser;
 const deleteUser = require("./userController").deleteUser;
+// Reviews
+
+const getReviews = require("./reviewController").getReviews;
+const getReview = require("./reviewController").getReview;
+const createReview = require("./reviewController").createReview;
+const updateReview = require("./reviewController").updateReview;
+const deleteReview = require("./reviewController").deleteReview;
+
 module.exports = {
   getBootcamps,
   getBootcamp,
@@ -40,4 +48,12 @@ module.exports = {
   updateUser,
   getUsers,
   getUser,
+
+  // reviews
+
+  getReviews,
+  getReview,
+  createReview,
+  updateReview,
+  deleteReview,
 };

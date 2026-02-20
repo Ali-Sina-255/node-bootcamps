@@ -14,6 +14,7 @@ const bootcampsRoutes = require("./routes/bootcamps.routes");
 const courseRoutes = require("./routes/course.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const reviewRoutes = require("./routes/review.routes");
 // Load environment variables
 dotenv.config({
   path: path.join(__dirname, "config", "config.env"),
@@ -48,6 +49,7 @@ app.use("/api/v1/bootcamps", bootcampsRoutes);
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 // Error handler (MUST be last middleware)
 app.use(errorHandler);
