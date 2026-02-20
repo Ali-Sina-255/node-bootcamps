@@ -8,7 +8,13 @@ const fileupload = require("express-fileupload");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middleware/error");
-
+// security
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const xssClean = require("xss-clean");
+const rateLimiter = require("express-rate-limit");
+const hpp = require("hpp");
+const cors = require("cors");
 // Routes
 const bootcampsRoutes = require("./routes/bootcamps.routes");
 const courseRoutes = require("./routes/course.routes");
@@ -25,7 +31,25 @@ connectDB();
 
 const app = express();
 
-// Body parser
+// security for authentication
+app.use(mongoSanitize());
+// set security headers
+app.use(helmet());
+app.use(xssClean());
+
+const limiter = rateLimiter({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 1,
+});
+
+app.use(limiter);
+
+//prevent http parma pollution
+app.use(hpp());
+// Enable cors
+app.use(cors());
+
+//  Body parser
 app.use(express.json());
 
 app.use(cookieParser());

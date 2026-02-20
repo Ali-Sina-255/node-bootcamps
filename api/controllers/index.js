@@ -20,6 +20,7 @@ const getUsers = require("./userController").getUsers;
 const getUser = require("./userController").getUser;
 const updateUser = require("./userController").updateUser;
 const deleteUser = require("./userController").deleteUser;
+const logoutUser = require("./authController").logoutUser;
 // Reviews
 
 const getReviews = require("./reviewController").getReviews;
@@ -48,6 +49,7 @@ module.exports = {
   updateUser,
   getUsers,
   getUser,
+  logoutUser,
 
   // reviews
 
